@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ilimitata FUN — World-Class Performers for Every Occasion</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8D5A3;
+  --gold-dark: #8B6914;
+  --black: #0A0A0A;
+  --off-black: #111111;
+  --dark: #1A1A1A;
+  --mid: #2A2A2A;
+  --gray: #888;
+  --light-gray: #ccc;
+  --white: #FAFAF8;
+  --cream: #F5F0E8;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-weight:300;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:1.25rem 3rem;border-bottom:0.5px solid rgba(201,168,76,0.2);background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);}
+.nav-logo{font-family:var(--font-display);font-size:22px;font-weight:500;letter-spacing:2px;color:var(--gold);}
+.nav-logo span{color:var(--white);}
+.nav-links{display:flex;gap:2rem;align-items:center;}
+.nav-links a{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-cta{background:transparent;border:0.5px solid var(--gold);color:var(--gold);padding:9px 22px;font-family:var(--font-body);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.nav-cta:hover{background:var(--gold);color:var(--black);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 4rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%, rgba(201,168,76,0.08) 0%, transparent 70%);}
+.hero-star{color:var(--gold);font-size:18px;letter-spacing:4px;margin-bottom:2rem;opacity:0.8;}
+.hero h1{font-family:var(--font-display);font-size:clamp(3rem,7vw,6rem);font-weight:300;line-height:1.1;letter-spacing:-1px;margin-bottom:1.5rem;max-width:900px;}
+.hero h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:15px;color:var(--gray);letter-spacing:0.5px;line-height:1.8;max-width:520px;margin-bottom:3rem;}
+
+/* SEARCH */
+.search-wrap{width:100%;max-width:700px;margin-bottom:2rem;}
+.location-tabs{display:flex;gap:0;margin-bottom:0;border:0.5px solid rgba(201,168,76,0.3);overflow:hidden;}
+.loc-tab{flex:1;padding:10px 8px;font-size:11px;letter-spacing:1px;text-transform:uppercase;background:transparent;color:var(--gray);border:none;cursor:pointer;transition:all 0.2s;text-align:center;}
+.loc-tab.active,.loc-tab:hover{background:var(--gold);color:var(--black);}
+.search-bar{display:flex;border:0.5px solid rgba(201,168,76,0.4);margin-top:-0.5px;}
+.search-bar input{flex:1;background:rgba(201,168,76,0.05);border:none;padding:14px 20px;color:var(--white);font-family:var(--font-body);font-size:14px;outline:none;}
+.search-bar input::placeholder{color:var(--gray);}
+.search-bar button{background:var(--gold);border:none;padding:14px 28px;color:var(--black);font-family:var(--font-body);font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-weight:500;}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:1.5rem;}
+.filter-tab{padding:7px 18px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;background:transparent;border:0.5px solid rgba(255,255,255,0.15);color:var(--gray);cursor:pointer;transition:all 0.2s;}
+.filter-tab.active,.filter-tab:hover{border-color:var(--gold);color:var(--gold);}
+
+/* STATS */
+.stats{display:flex;justify-content:center;gap:0;border-top:0.5px solid rgba(201,168,76,0.2);border-bottom:0.5px solid rgba(201,168,76,0.2);}
+.stat{flex:1;max-width:220px;text-align:center;padding:2.5rem 1rem;border-right:0.5px solid rgba(201,168,76,0.15);}
+.stat:last-child{border-right:none;}
+.stat-num{font-family:var(--font-display);font-size:42px;font-weight:300;color:var(--gold);line-height:1;}
+.stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:8px;}
+
+/* SECTIONS */
+.section{padding:6rem 3rem;max-width:1200px;margin:0 auto;}
+.section-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.section-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);font-weight:300;line-height:1.2;margin-bottom:1rem;}
+.section-title em{font-style:italic;color:var(--gold);}
+.section-sub{font-size:14px;color:var(--gray);line-height:1.8;max-width:480px;}
+
+/* CATEGORIES */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:rgba(201,168,76,0.15);margin-top:3rem;border:0.5px solid rgba(201,168,76,0.15);}
+.cat-card{background:var(--off-black);padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:background 0.2s;}
+.cat-card:hover{background:var(--dark);}
+.cat-icon{font-size:28px;margin-bottom:0.75rem;}
+.cat-name{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--white);margin-bottom:4px;}
+.cat-count{font-size:11px;color:var(--gold);}
+
+/* PERFORMERS GRID */
+.roster-header{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.filters-panel{min-width:200px;}
+.filters-panel h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+.filter-group{margin-bottom:1.5rem;}
+.filter-group label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);display:block;margin-bottom:0.75rem;}
+.filter-group select{width:100%;background:var(--dark);border:0.5px solid rgba(201,168,76,0.3);color:var(--white);padding:8px 12px;font-family:var(--font-body);font-size:13px;outline:none;cursor:pointer;}
+.filter-group select option{background:var(--dark);}
+.range-wrap{display:flex;align-items:center;gap:8px;}
+.range-wrap input[type=range]{flex:1;accent-color:var(--gold);}
+.range-wrap span{font-size:12px;color:var(--gold);min-width:50px;}
+.checkbox-group{display:flex;flex-direction:column;gap:8px;}
+.checkbox-group label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray);cursor:pointer;}
+.checkbox-group input{accent-color:var(--gold);}
+.performers-grid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:rgba(201,168,76,0.1);}
+.performer-card{background:var(--off-black);padding:1.5rem;cursor:pointer;transition:background 0.2s;position:relative;}
+.performer-card:hover{background:var(--dark);}
+.performer-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:500;margin-bottom:1rem;border:0.5px solid rgba(201,168,76,0.3);}
+.performer-name{font-family:var(--font-display);font-size:18px;font-weight:400;margin-bottom:4px;}
+.performer-type{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.performer-loc{font-size:12px;color:var(--gray);margin-bottom:8px;}
+.performer-rating{font-size:12px;color:var(--gold-light);margin-bottom:12px;}
+.performer-price{font-size:13px;color:var(--white);}
+.performer-price span{color:var(--gold);}
+.book-btn{margin-top:1rem;width:100%;background:transparent;border:0.5px solid var(--gold);color:var(--gold);padding:9px;font-family:var(--font-body);font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.book-btn:hover{background:var(--gold);color:var(--black);}
+
+/* HOW IT WORKS */
+.how-section{background:var(--off-black);padding:6rem 3rem;border-top:0.5px solid rgba(201,168,76,0.15);border-bottom:0.5px solid rgba(201,168,76,0.15);}
+.how-inner{max-width:1200px;margin:0 auto;}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:3rem;margin-top:4rem;}
+.step{border-left:0.5px solid rgba(201,168,76,0.3);padding-left:2rem;}
+.step-num{font-family:var(--font-display);font-size:48px;font-weight:300;color:rgba(201,168,76,0.3);line-height:1;margin-bottom:1rem;}
+.step-icon{font-size:24px;margin-bottom:1rem;}
+.step h3{font-family:var(--font-display);font-size:22px;font-weight:400;margin-bottom:0.75rem;}
+.step p{font-size:13px;color:var(--gray);line-height:1.8;}
+
+/* TESTIMONIALS */
+.testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:rgba(201,168,76,0.1);margin-top:3rem;}
+.testimonial{background:var(--off-black);padding:2.5rem;}
+.stars{color:var(--gold);font-size:14px;margin-bottom:1.25rem;}
+.testimonial blockquote{font-family:var(--font-display);font-size:17px;font-weight:300;font-style:italic;line-height:1.7;color:var(--light-gray);margin-bottom:1.5rem;}
+.testimonial-author{display:flex;align-items:center;gap:12px;}
+.author-avatar{width:36px;height:36px;border-radius:50%;background:var(--mid);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;color:var(--gold);}
+.author-name{font-size:13px;font-weight:500;}
+.author-event{font-size:11px;color:var(--gray);margin-top:2px;}
+
+/* FOR PERFORMERS CTA */
+.performer-cta{background:linear-gradient(135deg,rgba(201,168,76,0.1) 0%,transparent 60%);border:0.5px solid rgba(201,168,76,0.2);padding:4rem;text-align:center;margin:4rem 0;}
+.performer-cta h2{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,3rem);font-weight:300;margin-bottom:1rem;}
+.performer-cta p{font-size:14px;color:var(--gray);line-height:1.8;max-width:480px;margin:0 auto 2rem;}
+.cta-link{display:inline-block;border:0.5px solid var(--gold);color:var(--gold);padding:12px 32px;font-size:11px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;cursor:pointer;background:transparent;font-family:var(--font-body);transition:all 0.2s;}
+.cta-link:hover{background:var(--gold);color:var(--black);}
+
+/* FOOTER */
+footer{background:var(--off-black);border-top:0.5px solid rgba(201,168,76,0.2);padding:4rem 3rem 2rem;}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-brand .nav-logo{font-size:20px;margin-bottom:1rem;display:block;}
+.footer-brand p{font-size:13px;color:var(--gray);line-height:1.8;max-width:280px;margin-bottom:1.5rem;}
+.social-links{display:flex;gap:12px;}
+.social-link{width:32px;height:32px;border:0.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--gray);text-decoration:none;transition:all 0.2s;}
+.social-link:hover{border-color:var(--gold);color:var(--gold);}
+.footer-col h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:8px;}
+.footer-col ul li a{font-size:13px;color:var(--gray);text-decoration:none;transition:color 0.2s;}
+.footer-col ul li a:hover{color:var(--white);}
+.footer-bottom{border-top:0.5px solid rgba(201,168,76,0.15);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-bottom p{font-size:12px;color:var(--gray);}
+
+/* MODAL OVERLAY */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--off-black);border:0.5px solid rgba(201,168,76,0.3);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;}
+.modal-header{padding:2rem 2rem 1.5rem;border-bottom:0.5px solid rgba(201,168,76,0.15);}
+.modal-header h2{font-family:var(--font-display);font-size:28px;font-weight:300;}
+.modal-header p{font-size:13px;color:var(--gray);margin-top:6px;}
+.modal-close{position:absolute;top:1.5rem;right:1.5rem;background:none;border:none;color:var(--gray);font-size:20px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--white);}
+.modal-body{padding:2rem;}
+.performer-summary{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(201,168,76,0.05);border:0.5px solid rgba(201,168,76,0.15);margin-bottom:1.5rem;}
+.performer-summary .avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;font-weight:400;border:0.5px solid rgba(201,168,76,0.3);}
+.performer-summary .info h4{font-family:var(--font-display);font-size:18px;font-weight:400;}
+.performer-summary .info p{font-size:12px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;}
+
+/* FORM */
+.form-group{margin-bottom:1.25rem;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-group label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
+.form-group input,.form-group select{width:100%;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.15);color:var(--white);padding:11px 14px;font-family:var(--font-body);font-size:14px;outline:none;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--gold);}
+.form-group select{cursor:pointer;}
+.form-group select option{background:var(--dark);}
+.amount-display{background:rgba(201,168,76,0.05);border:0.5px solid rgba(201,168,76,0.2);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;}
+.amount-display span{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);}
+.amount-display strong{font-family:var(--font-display);font-size:24px;font-weight:300;color:var(--gold);}
+.platform-fee{font-size:11px;color:var(--gray);text-align:right;margin-top:4px;}
+
+/* STRIPE ELEMENT */
+.stripe-section{margin-bottom:1.5rem;}
+.stripe-section label{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
+#card-element{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.15);padding:13px 14px;transition:border-color 0.2s;}
+#card-element.StripeElement--focus{border-color:var(--gold);}
+#card-errors{color:#e74c3c;font-size:13px;margin-top:8px;min-height:18px;}
+.secure-badge{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray);margin-bottom:1.5rem;}
+.secure-badge::before{content:'🔒';}
+
+/* PAY BUTTON */
+.pay-btn{width:100%;background:var(--gold);border:none;color:var(--black);padding:14px;font-family:var(--font-body);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:500;cursor:pointer;transition:opacity 0.2s;}
+.pay-btn:hover{opacity:0.9;}
+.pay-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* SUCCESS STATE */
+.payment-success{display:none;text-align:center;padding:2rem;}
+.payment-success .check{font-size:48px;margin-bottom:1rem;}
+.payment-success h3{font-family:var(--font-display);font-size:28px;font-weight:300;color:var(--gold);margin-bottom:0.75rem;}
+.payment-success p{font-size:14px;color:var(--gray);line-height:1.8;}
+
+/* SPINNER */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,0.3);border-top-color:var(--black);border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  .hero{padding:6rem 1.5rem 3rem;}
+  .stats{flex-wrap:wrap;}
+  .stat{min-width:50%;}
+  .section{padding:4rem 1.5rem;}
+  .footer-top{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .location-tabs{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✦ Ilimitata <span>FUN</span></div>
+  <div class="nav-links">
+    <a href="#categories">Categories</a>
+    <a href="#roster">Performers</a>
+    <a href="#how">How It Works</a>
+    <a href="#testimonials">Reviews</a>
+  </div>
+  <button class="nav-cta" onclick="openModal(performers[0])">List Your Act</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-star">✦ ✦ ✦</div>
+  <h1>Discover <em>Extraordinary</em> Talent<br/>for Every Occasion</h1>
+  <p class="hero-sub">From intimate soirées to grand galas — connect with the world's finest performers and create moments that endure.</p>
+
+  <div class="search-wrap">
+    <div class="location-tabs">
+      <button class="loc-tab active" onclick="setLocation(this)">Any Location</button>
+      <button class="loc-tab" onclick="setLocation(this)">New York</button>
+      <button class="loc-tab" onclick="setLocation(this)">Los Angeles</button>
+      <button class="loc-tab" onclick="setLocation(this)">Chicago</button>
+      <button class="loc-tab" onclick="setLocation(this)">Miami</button>
+      <button class="loc-tab" onclick="setLocation(this)">Austin</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search performers, genres, occasions..."/>
+      <button>Search</button>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterPerformers('all',this)">All</button>
+    <button class="filter-tab" onclick="filterPerformers('Live Music',this)">Live Music</button>
+    <button class="filter-tab" onclick="filterPerformers('DJ',this)">DJ</button>
+    <button class="filter-tab" onclick="filterPerformers('Magicians',this)">Magicians</button>
+    <button class="filter-tab" onclick="filterPerformers('Dancers',this)">Dancers</button>
+    <button class="filter-tab" onclick="filterPerformers('Comedians',this)">Comedians</button>
+    <button class="filter-tab" onclick="filterPerformers('Circus Arts',this)">Circus Arts</button>
+    <button class="filter-tab" onclick="filterPerformers('Speakers',this)">Speakers</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">4,200+</div><div class="stat-label">Verified Performers</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Client Satisfaction</div></div>
+  <div class="stat"><div class="stat-num">28K+</div><div class="stat-label">Events Produced</div></div>
+  <div class="stat"><div class="stat-num">180+</div><div class="stat-label">Cities Worldwide</div></div>
+</div>
+
+<!-- CATEGORIES -->
+<div id="categories">
+<div class="section">
+  <div class="section-tag">Our Specialities</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <div class="section-title">Browse by <em>Category</em></div>
+      <div class="section-sub">Every discipline, meticulously curated.</div>
+    </div>
+    <a href="#roster" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">View All Categories →</a>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="filterPerformers('Live Music',null)"><div class="cat-icon">🥁</div><div class="cat-name">Live Music</div><div class="cat-count">840 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('DJ',null)"><div class="cat-icon">🎧</div><div class="cat-name">DJ</div><div class="cat-count">620 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('Magicians',null)"><div class="cat-icon">🪄</div><div class="cat-name">Magicians</div><div class="cat-count">210 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('Dancers',null)"><div class="cat-icon">🌺</div><div class="cat-name">Dancers</div><div class="cat-count">390 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('Comedians',null)"><div class="cat-icon">🎤</div><div class="cat-name">Comedians</div><div class="cat-count">175 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('Circus Arts',null)"><div class="cat-icon">🎪</div><div class="cat-name">Circus Arts</div><div class="cat-count">130 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('Speakers',null)"><div class="cat-icon">🗣️</div><div class="cat-name">Speakers</div><div class="cat-count">310 acts</div></div>
+    <div class="cat-card" onclick="filterPerformers('all',null)"><div class="cat-icon">✦</div><div class="cat-name">All Acts</div><div class="cat-count">500+ more</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ROSTER -->
+<div id="roster" style="background:var(--off-black);border-top:0.5px solid rgba(201,168,76,0.15);">
+<div class="section">
+  <div class="section-tag">Our Roster</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:3rem;">
+    <div>
+      <div class="section-title">Featured <em>Performers</em></div>
+      <div class="section-sub">Hand-selected talent available for your event.</div>
+    </div>
+    <a href="#" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;">View Full Roster →</a>
+  </div>
+
+  <div class="roster-header">
+    <div class="filters-panel">
+      <h4>Refine</h4>
+      <div class="filter-group">
+        <label>Sort By</label>
+        <select id="sort-select" onchange="sortPerformers()">
+          <option value="featured">Featured</option>
+          <option value="rating">Highest Rated</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Investment Range</label>
+        <div class="range-wrap">
+          <input type="range" min="0" max="2000" value="2000" step="100" id="price-range" oninput="updatePriceFilter(this)"/>
+          <span id="price-label">$2,000+</span>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Discipline</label>
+        <div class="checkbox-group" id="discipline-filters">
+          <label><input type="checkbox" checked onchange="applyFilters()"/> Live Music</label>
+          <label><input type="checkbox" checked onchange="applyFilters()"/> DJ</label>
+          <label><input type="checkbox" checked onchange="applyFilters()"/> Magicians</label>
+          <label><input type="checkbox" checked onchange="applyFilters()"/> Dancers</label>
+          <label><input type="checkbox" checked onchange="applyFilters()"/> Comedians</label>
+          <label><input type="checkbox" checked onchange="applyFilters()"/> Circus Arts</label>
+          <label><input type="checkbox" checked onchange="applyFilters()"/> Speakers</label>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Minimum Rating</label>
+        <select id="rating-filter" onchange="applyFilters()">
+          <option value="0">Any Rating</option>
+          <option value="4.5">★ 4.5 & Above</option>
+          <option value="4.8">★ 4.8 & Above</option>
+          <option value="5.0">★ 5.0 Only</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Occasion</label>
+        <select id="occasion-filter">
+          <option>All Occasions</option>
+          <option>Weddings</option>
+          <option>Corporate</option>
+          <option>Private Celebrations</option>
+          <option>Festivals & Galas</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="performers-grid" id="performers-grid"></div>
+  </div>
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div id="how" class="how-section">
+  <div class="how-inner">
+    <div style="text-align:center;margin-bottom:1rem;">
+      <div class="section-tag" style="text-align:center;">The Process</div>
+      <div class="section-title" style="text-align:center;">How It <em>Works</em></div>
+      <div class="section-sub" style="margin:0 auto;text-align:center;">Three elegant steps to your perfect booking.</div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><div class="step-icon">🔍</div><h3>Browse & Discover</h3><p>Explore our curated roster by discipline, location, or budget. Review portfolios, watch reels, and read verified testimonials.</p></div>
+      <div class="step"><div class="step-num">02</div><div class="step-icon">💬</div><h3>Consult & Customise</h3><p>Communicate directly with performers to discuss your vision, requirements, and bespoke arrangements prior to any commitment.</p></div>
+      <div class="step"><div class="step-num">03</div><div class="step-icon">✦</div><h3>Book with Confidence</h3><p>Secure your booking through our protected payment platform. Funds are held in escrow and released only upon successful performance.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOR PERFORMERS -->
+<div class="section">
+  <div class="performer-cta">
+    <div class="section-tag" style="text-align:center;">For Performers</div>
+    <h2>Showcase Your Art.<br/><em>Grow Your Career.</em></h2>
+    <p>Join our exclusive roster of 4,200+ performers. List your act at no cost, connect with discerning clients, and let your calendar fill with premium engagements.</p>
+    <button class="cta-link">Apply to Join the Roster →</button>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div id="testimonials" style="background:var(--off-black);border-top:0.5px solid rgba(201,168,76,0.15);">
+<div class="section">
+  <div class="section-tag">Client Voices</div>
+  <div class="section-title">What Our <em>Clients</em> Say</div>
+  <div class="testimonials">
+    <div class="testimonial"><div class="stars">★★★★★</div><blockquote>"We found an extraordinary jazz trio for our wedding within minutes. Every single guest remarked on how exquisite the music was throughout the evening."</blockquote><div class="testimonial-author"><div class="author-avatar">S</div><div><div class="author-name">Sarah M.</div><div class="author-event">Wedding — New York</div></div></div></div>
+    <div class="testimonial"><div class="stars">★★★★★</div><blockquote>"Our annual gala was elevated to an entirely new standard. The comedian was perfectly calibrated for our audience and the booking process was seamless."</blockquote><div class="testimonial-author"><div class="author-avatar">J</div><div><div class="author-name">James T.</div><div class="author-event">Corporate Gala — Chicago</div></div></div></div>
+    <div class="testimonial"><div class="stars">★★★★★</div><blockquote>"The fire artists transformed our private celebration into something truly unforgettable. The escrow payment system gave us complete peace of mind."</blockquote><div class="testimonial-author"><div class="author-avatar">A</div><div><div class="author-name">Aisha K.</div><div class="author-event">Private Event — Miami</div></div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="nav-logo">✦ Ilimitata <span style="color:var(--white)">FUN</span></span>
+        <p>The premier platform for discovering and engaging world-class performers for events of every scale and occasion.</p>
+        <div class="social-links">
+          <a class="social-link" href="#">𝕏</a>
+          <a class="social-link" href="#">in</a>
+          <a class="social-link" href="#">📸</a>
+          <a class="social-link" href="#">▶</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Browse Performers</a></li><li><a href="#">List Your Act</a></li><li><a href="#">Pricing</a></li><li><a href="#">How It Works</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Press & Media</a></li><li><a href="#">Careers</a></li><li><a href="#">Blog</a></li></ul></div>
+      <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Centre</a></li><li><a href="#">Safety & Trust</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ilimitata FUN. All rights reserved.</p>
+      <p>Crafted for those who demand the extraordinary.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Secure Your Booking</h2>
+      <p>Complete your reservation below</p>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="performer-summary" id="performer-summary"></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="client-name" placeholder="Full name"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="client-email" placeholder="your@email.com"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Event Date</label>
+          <input type="date" id="booking-date"/>
+        </div>
+        <div class="form-group">
+          <label>Event Time</label>
+          <input type="time" id="booking-time"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Duration</label>
+        <select id="duration">
+          <option value="1">1 hour</option>
+          <option value="2" selected>2 hours</option>
+          <option value="3">3 hours</option>
+          <option value="4">4 hours</option>
+          <option value="6">6 hours</option>
+        </select>
+      </div>
+
+      <div class="amount-display">
+        <span>Total Investment</span>
+        <strong id="modal-amount">$0</strong>
+      </div>
+      <div class="platform-fee" id="platform-fee-display"></div>
+
+      <div class="stripe-section">
+        <label>Payment Details</label>
+        <div id="card-element"></div>
+        <div id="card-errors"></div>
+      </div>
+
+      <div class="secure-badge">Your payment is encrypted and secured by Stripe</div>
+
+      <button class="pay-btn" id="pay-btn" onclick="processPayment()">
+        Confirm & Pay
+      </button>
+    </div>
+
+    <div class="payment-success" id="payment-success">
+      <div class="check">✦</div>
+      <h3>Booking Confirmed!</h3>
+      <p>Your booking has been secured. A confirmation has been sent to your email. The performer will be in touch within 24 hours.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const PUBLISHABLE_KEY = 'pk_test_YOUR_PUBLISHABLE_KEY_HERE';
+
+const performers = [
+  { id:1, name:'Maya Rivera', initials:'MR', type:'Live Music', loc:'New York, NY', rating:4.9, reviews:128, price:800, color:'#2C2C2A', bg:'rgba(201,168,76,0.15)' },
+  { id:2, name:'DJ Kilo', initials:'DK', type:'DJ', loc:'Los Angeles, CA', rating:5.0, reviews:94, price:1200, color:'#2C2C2A', bg:'rgba(201,168,76,0.1)' },
+  { id:3, name:'The Kessler Trio', initials:'KT', type:'Live Music', loc:'Chicago, IL', rating:4.8, reviews:76, price:1500, color:'#2C2C2A', bg:'rgba(201,168,76,0.12)' },
+  { id:4, name:'Luna Comedy', initials:'LC', type:'Comedians', loc:'Miami, FL', rating:4.9, reviews:112, price:600, color:'#2C2C2A', bg:'rgba(201,168,76,0.08)' },
+  { id:5, name:'Elara Dance Co.', initials:'ED', type:'Dancers', loc:'New York, NY', rating:5.0, reviews:58, price:2000, color:'#2C2C2A', bg:'rgba(201,168,76,0.15)' },
+  { id:6, name:'Marco the Mystic', initials:'MM', type:'Magicians', loc:'Las Vegas, NV', rating:4.8, reviews:203, price:900, color:'#2C2C2A', bg:'rgba(201,168,76,0.1)' },
+  { id:7, name:'Cirque Nouveau', initials:'CN', type:'Circus Arts', loc:'Austin, TX', rating:4.9, reviews:45, price:1800, color:'#2C2C2A', bg:'rgba(201,168,76,0.12)' },
+  { id:8, name:'Dr. James Cole', initials:'JC', type:'Speakers', loc:'Chicago, IL', rating:4.7, reviews:89, price:500, color:'#2C2C2A', bg:'rgba(201,168,76,0.08)' },
+];
+
+let filtered = [...performers];
+let stripe, cardElement, currentPerformer;
+
+function renderPerformers(list) {
+  const grid = document.getElementById('performers-grid');
+  grid.innerHTML = list.map(p => `
+    <div class="performer-card">
+      <div class="performer-avatar" style="background:${p.bg};color:var(--gold);">${p.initials}</div>
+      <div class="performer-name">${p.name}</div>
+      <div class="performer-type">${p.type}</div>
+      <div class="performer-loc">📍 ${p.loc}</div>
+      <div class="performer-rating">${'★'.repeat(Math.floor(p.rating))} ${p.rating} (${p.reviews} reviews)</div>
+      <div class="performer-price">From <span>$${p.price.toLocaleString()}</span></div>
+      <button class="book-btn" onclick="openModal(performers.find(x=>x.id===${p.id}))">Book Now</button>
+    </div>
+  `).join('');
+}
+
+function filterPerformers(type, btn) {
+  if(btn) {
+    document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  filtered = type === 'all' ? [...performers] : performers.filter(p=>p.type===type);
+  renderPerformers(filtered);
+  if(btn) document.getElementById('roster').scrollIntoView({behavior:'smooth'});
+}
+
+function sortPerformers() {
+  const val = document.getElementById('sort-select').value;
+  if(val==='rating') filtered.sort((a,b)=>b.rating-a.rating);
+  else if(val==='price-asc') filtered.sort((a,b)=>a.price-b.price);
+  else if(val==='price-desc') filtered.sort((a,b)=>b.price-a.price);
+  renderPerformers(filtered);
+}
+
+function updatePriceFilter(el) {
+  const val = parseInt(el.value);
+  document.getElementById('price-label').textContent = val >= 2000 ? '$2,000+' : '$'+val.toLocaleString();
+  applyFilters();
+}
+
+function applyFilters() {
+  const maxPrice = parseInt(document.getElementById('price-range').value);
+  const minRating = parseFloat(document.getElementById('rating-filter').value);
+  const checked = Array.from(document.querySelectorAll('#discipline-filters input:checked')).map(cb=>cb.parentElement.textContent.trim());
+  filtered = performers.filter(p => {
+    if(maxPrice < 2000 && p.price > maxPrice) return false;
+    if(p.rating < minRating) return false;
+    if(!checked.some(c=>c===p.type)) return false;
+    return true;
+  });
+  renderPerformers(filtered);
+}
+
+function setLocation(btn) {
+  document.querySelectorAll('.loc-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function openModal(performer) {
+  currentPerformer = performer;
+  document.getElementById('modal-overlay').classList.add('active');
+  document.getElementById('payment-success').style.display = 'none';
+  document.getElementById('modal-body').style.display = 'block';
+
+  const duration = parseInt(document.getElementById('duration').value)||2;
+  const total = performer.price * duration;
+  const fee = Math.round(total * 0.10);
+
+  document.getElementById('performer-summary').innerHTML = `
+    <div class="avatar" style="background:${performer.bg};color:var(--gold);">${performer.initials}</div>
+    <div class="info"><h4>${performer.name}</h4><p>${performer.type}</p></div>
+  `;
+  document.getElementById('modal-amount').textContent = '$'+total.toLocaleString();
+  document.getElementById('platform-fee-display').textContent = `Includes $${fee} platform fee (10%)`;
+
+  document.getElementById('duration').onchange = function() {
+    const d = parseInt(this.value)||2;
+    const t = performer.price * d;
+    const f = Math.round(t * 0.10);
+    document.getElementById('modal-amount').textContent = '$'+t.toLocaleString();
+    document.getElementById('platform-fee-display').textContent = `Includes $${f} platform fee (10%)`;
+  };
+
+  initStripe();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+}
+
+function closeModalOutside(e) {
+  if(e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function initStripe() {
+  if(!stripe) {
+    stripe = Stripe(PUBLISHABLE_KEY);
+    const elements = stripe.elements({
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#C9A84C',
+          colorBackground: '#1A1A1A',
+          colorText: '#FAFAF8',
+          colorDanger: '#e74c3c',
+          fontFamily: 'DM Sans, sans-serif',
+          borderRadius: '0px',
+        }
+      }
+    });
+    cardElement = elements.create('card', {
+      style: {
+        base: { color:'#FAFAF8', fontFamily:'DM Sans, sans-serif', fontSize:'14px', '::placeholder':{ color:'#888' } },
+        invalid: { color:'#e74c3c' }
+      }
+    });
+    cardElement.mount('#card-element');
+    cardElement.on('change', e => {
+      document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
+    });
+  }
+}
+
+async function processPayment() {
+  const name = document.getElementById('client-name').value.trim();
+  const email = document.getElementById('client-email').value.trim();
+  const date = document.getElementById('booking-date').value;
+  const time = document.getElementById('booking-time').value;
+  const duration = parseInt(document.getElementById('duration').value)||2;
+
+  if(!name||!email||!date||!time) {
+    document.getElementById('card-errors').textContent = 'Please fill in all fields.';
+    return;
+  }
+
+  const amount = currentPerformer.price * duration;
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Processing...';
+  document.getElementById('card-errors').textContent = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/create-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount,
+        performerName: currentPerformer.name,
+        bookingDate: date,
+        bookingTime: time,
+        clientEmail: email,
+        clientName: name
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.error) {
+      document.getElementById('card-errors').textContent = data.error;
+      btn.disabled = false;
+      btn.innerHTML = 'Confirm & Pay';
+      return;
+    }
+
+    const result = await stripe.confirmCardPayment(data.clientSecret, {
+      payment_method: {
+        card: cardElement,
+        billing_details: { name, email }
+      }
+    });
+
+    if(result.error) {
+      document.getElementById('card-errors').textContent = result.error.message;
+      btn.disabled = false;
+      btn.innerHTML = 'Confirm & Pay';
+    } else if(result.paymentIntent.status === 'succeeded') {
+      document.getElementById('modal-body').style.display = 'none';
+      document.getElementById('payment-success').style.display = 'block';
+    }
+  } catch(err) {
+    document.getElementById('card-errors').textContent = 'Connection error. Please try again.';
+    btn.disabled = false;
+    btn.innerHTML = 'Confirm & Pay';
+  }
+}
+
+renderPerformers(performers);
+</script>
+</body>
+</html>

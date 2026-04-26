@@ -1,6 +1,6 @@
 [build]
-  functions = "netlify/functions"
-  command = "cd netlify/functions && npm install"
+  functions = "netlify/Functions"
+  command = "cd netlify/Functions && npm install"
 
 [[headers]]
   for = "/*"

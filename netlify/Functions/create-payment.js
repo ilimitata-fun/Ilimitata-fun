@@ -8,7 +8,7 @@ exports.handler = async (event) => {
     const response = await fetch('https://api.stripe.com/v1/payment_intents', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${secretKey}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ amount: Math.round(amount * 100).toString(), currency: 'usd', receipt_email: clientEmail, description: `Ilimitata FUN — ${performerName} on ${bookingDate}` }).toString()
+      body: new URLSearchParams({ amount: Math.round(amount * 100).toString(), currency: 'usd', receipt_email: clientEmail, description: `Ilimitata FUN - ${performerName} on ${bookingDate}` }).toString()
     });
     const paymentIntent = await response.json();
     if (paymentIntent.error) return { statusCode: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' }, body: JSON.stringify({ error: paymentIntent.error.message }) };
